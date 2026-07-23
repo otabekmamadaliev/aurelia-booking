@@ -24,6 +24,21 @@ picked.
 - **Persists in `localStorage`,** so the demo remembers your reservations between
   visits. Seeded house bookings refresh themselves if the data goes stale.
 
+## Photography
+
+Rooms carry their own images (`photo.small` / `photo.large` on each row in
+`src/data/rooms.js`), so the same photograph feeds the room card and the
+thumbnail in the booking modal, and a `rooms` table storing image URLs would
+drop straight in.
+
+The gradients from the original design are still there, one layer down: they
+are the placeholder that shows while a photo loads, and what you keep looking
+at if a photo never arrives. Nothing renders as an empty box.
+
+All images are WebP, cut to the widths the layout actually uses (~740 KB for
+the whole page), with `srcset` on the hero and room images. See
+[CREDITS.md](CREDITS.md) for photographers and licence.
+
 ## Accessibility & motion
 
 - Full keyboard support in the calendar: arrows move day by day, `PageUp` /
@@ -33,8 +48,8 @@ picked.
 - Form errors are wired up with `aria-invalid` / `aria-describedby`, and focus
   moves to the first invalid field on submit.
 - `prefers-reduced-motion: reduce` disables the scroll reveals, the dialog
-  transitions and all hover transforms — the animations are skipped, not merely
-  shortened.
+  transitions, the slow drift across the hero photographs and all hover
+  transforms — the animations are skipped, not merely shortened.
 
 ## Running it
 
