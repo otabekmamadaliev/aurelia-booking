@@ -30,6 +30,11 @@ export default function BookingBar() {
   useEffect(() => {
     if (!openPanel) return
 
+    // Whichever control opened this panel — the dates popover can be opened
+    // from either the check-in or the check-out cell, and Escape should return
+    // focus to the one actually used.
+    const opener = document.activeElement
+
     function handlePointerDown(event) {
       if (!barRef.current?.contains(event.target)) setOpenPanel(null)
     }
@@ -37,8 +42,9 @@ export default function BookingBar() {
       if (event.key !== 'Escape') return
       setOpenPanel(null)
       // Send focus back where it came from rather than dropping it on <body>.
-      const trigger = openPanel === 'dates' ? datesTrigger : guestsTrigger
-      trigger.current?.focus()
+      const fallback = openPanel === 'dates' ? datesTrigger : guestsTrigger
+      if (opener && barRef.current?.contains(opener)) opener.focus()
+      else fallback.current?.focus()
     }
 
     document.addEventListener('pointerdown', handlePointerDown)

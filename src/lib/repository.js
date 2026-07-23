@@ -10,7 +10,7 @@ import { addDays, today } from './date'
  * Both repositories are async and return plain serialisable objects, so
  * swapping localStorage for a real backend means rewriting this file alone —
  * every caller already awaits, already handles a rejected promise, and already
- * treats writes as something that can fail. `createBooking` re-reads and
+ * treats writes as something that can fail. `bookingRepository.create` re-reads and
  * re-checks availability at write time rather than trusting what the UI
  * believed a moment ago, which is the same last-line-of-defence check a server
  * would do inside a transaction.
