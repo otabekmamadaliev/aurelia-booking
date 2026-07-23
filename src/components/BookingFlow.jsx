@@ -417,7 +417,7 @@ function ConfirmationStep({ booking, emailSent, onDone }) {
       <div className="receipt">
         <div className="receipt-line">
           <span>Room</span>
-          <span>{room?.name}</span>
+          <span>{room?.name ?? booking.roomId}</span>
         </div>
         <div className="receipt-line">
           <span>Stay</span>
