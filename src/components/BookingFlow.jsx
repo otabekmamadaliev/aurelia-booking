@@ -5,6 +5,7 @@ import { CURRENCY, findRoom } from '../data/rooms'
 import { formatLong, formatShort, nightsBetween } from '../lib/date'
 import { EMAIL_CONFIG } from '../lib/email'
 import { useBooking } from '../state/bookingContext'
+import Photo from './Photo'
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])'
@@ -221,7 +222,13 @@ function RoomStep({ matches, rooms, roomAvailability, search, onChoose, onChange
               key={room.id}
               onClick={() => onChoose(room.id)}
             >
-              <span className={`option-art ${room.art}`} aria-hidden="true" />
+              <span className={`option-art ${room.art}`}>
+                {/* Same fade-over-gradient treatment as everywhere else, so a
+                    thumbnail that fails to load shows the gradient rather than
+                    a broken-image glyph. `priority` because the modal shows
+                    these the moment it opens. */}
+                <Photo src={room.photo.small} alt="" priority />
+              </span>
               <span className="option-main">
                 <h3>{room.name}</h3>
                 <p>
