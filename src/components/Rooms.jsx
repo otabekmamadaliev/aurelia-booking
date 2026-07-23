@@ -1,6 +1,10 @@
 import { CURRENCY } from '../data/rooms'
 import { useBooking } from '../state/bookingContext'
+import Photo from './Photo'
 import Reveal from './Reveal'
+
+/** Card is ~353px on desktop, half-width on tablet, full-bleed on phones. */
+const ROOM_SIZES = '(max-width: 600px) 100vw, (max-width: 960px) 50vw, 360px'
 
 export default function Rooms() {
   const { rooms, roomAvailability, openFlow, search } = useBooking()
@@ -38,6 +42,12 @@ export default function Rooms() {
             return (
               <article className="room" key={room.id}>
                 <div className={`room-art ${room.art}`}>
+                  <Photo
+                    src={room.photo.large}
+                    srcSet={`${room.photo.small} 420w, ${room.photo.large} 800w`}
+                    sizes={ROOM_SIZES}
+                    alt={room.photo.alt}
+                  />
                   <span className="room-tag">{room.tag}</span>
                 </div>
                 <div className="room-body">

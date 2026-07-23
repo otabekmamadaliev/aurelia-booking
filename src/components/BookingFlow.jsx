@@ -221,7 +221,9 @@ function RoomStep({ matches, rooms, roomAvailability, search, onChoose, onChange
               key={room.id}
               onClick={() => onChoose(room.id)}
             >
-              <span className={`option-art ${room.art}`} aria-hidden="true" />
+              <span className={`option-art ${room.art}`}>
+                <img src={room.photo.small} alt="" decoding="async" />
+              </span>
               <span className="option-main">
                 <h3>{room.name}</h3>
                 <p>

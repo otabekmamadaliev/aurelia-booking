@@ -62,6 +62,42 @@ img {
   max-width: 100%;
 }
 
+/* ------------------------------------------------------------ photos ---
+   Every photograph sits on top of the gradient that used to be the artwork,
+   so the gradient doubles as the placeholder: it shows while the file is in
+   flight and stays if the file never loads. Nothing here ever renders as an
+   empty box. */
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  z-index: 0;
+}
+
+.photo.is-loaded {
+  opacity: 1;
+}
+
+/* A slow drift across the hero stills. 30s is long enough that it reads as
+   the room breathing rather than as an animation. */
+.photo-kb.is-loaded {
+  animation: ken-burns 30s ease-in-out infinite alternate;
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.05) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.14) translate3d(-1.8%, -1.2%, 0);
+  }
+}
+
 /* One consistent focus ring everywhere, visible on ivory, white and green. */
 :focus-visible {
   outline: 2px solid var(--brass);
@@ -312,11 +348,20 @@ img {
   box-shadow: 0 30px 60px -30px rgba(27, 26, 22, 0.35);
 }
 
+/* Sits above the photograph so the white labels stay legible on any image.
+   Darkened at both ends because the labels no longer all sit at the bottom. */
 .ph::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 55%, rgba(20, 41, 33, 0.55));
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 41, 33, 0.5) 0%,
+    transparent 32%,
+    transparent 58%,
+    rgba(20, 41, 33, 0.68) 100%
+  );
 }
 
 .ph-label {
@@ -328,6 +373,15 @@ img {
   font-family: var(--serif);
   font-size: 17px;
   letter-spacing: 0.04em;
+  text-shadow: 0 1px 12px rgba(20, 41, 33, 0.6);
+}
+
+/* The largest tile has the spa tile across its lower-left corner and the rating
+   seal across its lower-right, so its caption goes to the top instead of being
+   clipped at both ends. */
+.ph-1 .ph-label {
+  top: 16px;
+  bottom: auto;
 }
 
 .ph-1 {
@@ -779,13 +833,15 @@ section {
 .room-art {
   height: 230px;
   position: relative;
+  overflow: hidden;
 }
 
 .room-art::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 55%, rgba(20, 41, 33, 0.5));
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(20, 41, 33, 0.25) 0%, transparent 45%, rgba(20, 41, 33, 0.45));
 }
 
 .r1 {
@@ -982,6 +1038,27 @@ section {
 .amen-cell {
   background: var(--green);
   padding: 34px 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* The photo is texture only — the green wash on top keeps this band reading as
+   the solid dark block from the approved design, and keeps the copy legible. */
+.amen-cell .amen-photo.is-loaded {
+  opacity: 0.45;
+}
+
+.amen-cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(160deg, rgba(30, 58, 47, 0.7), rgba(20, 41, 33, 0.89));
+}
+
+.amen-body {
+  position: relative;
+  z-index: 2;
 }
 
 .amen-cell .ic {
@@ -1214,6 +1291,10 @@ footer {
 .steps {
   display: flex;
   gap: 26px;
+  /* The labels carry their own numbers, so the list markers would read
+     "1. 1 · Choose a room". */
+  list-style: none;
+  margin: 0;
   padding: 16px 34px;
   border-bottom: 1px solid var(--line);
   background: var(--card);
@@ -1287,6 +1368,15 @@ footer {
   height: 62px;
   border-radius: 3px;
   flex: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.option-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .option-main {
@@ -1642,5 +1732,12 @@ footer {
   .btn-gold:hover:not(:disabled),
   .option:hover:not(:disabled) {
     transform: none;
+  }
+
+  /* The hero drift is skipped outright, not shortened — the photo simply
+     sits still at its resting scale. */
+  .photo-kb.is-loaded {
+    animation: none;
+    transform: scale(1.05);
   }
 }
