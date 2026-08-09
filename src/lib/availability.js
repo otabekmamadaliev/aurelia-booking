@@ -6,6 +6,12 @@ import { nightsBetween, nightsInRange } from './date'
  * Every function takes the full booking list as an argument rather than
  * reaching for it, which is what makes the same code usable on a server later:
  * hand it the rows a `SELECT` returned and the answers are identical.
+ *
+ * `unitsLeft` is the primitive everything else is expressed in terms of. Once a
+ * room type can hold several physical rooms, "is it free?" stops being the
+ * interesting question and "how many are left?" starts being it — availability,
+ * scarcity and the struck-out nights in the calendar all fall out of the same
+ * count.
  */
 
 /**
@@ -32,28 +38,46 @@ export function conflictsFor(bookings, roomId, checkIn, checkOut) {
   )
 }
 
+/** How many units of one room type are occupied on a single night. */
+function takenOn(bookings, roomId, night) {
+  let count = 0
+  for (const booking of bookings) {
+    if (booking.roomId === roomId && booking.checkIn <= night && night < booking.checkOut) {
+      count += 1
+    }
+  }
+  return count
+}
+
 /**
- * Is at least one unit of this room free for the whole range?
+ * How many units of this room type could still be sold for the whole range.
  *
- * Counting conflicts against `units` rather than testing for "any conflict at
- * all" is what lets a room type hold several physical rooms. With `units: 1`
- * it degrades to the obvious rule: one conflict means unavailable.
+ * This is the primitive the rest of the engine is built on. Counting against
+ * `units` rather than testing for "any conflict at all" is what lets a room
+ * type hold several physical rooms; with `units: 1` it degrades to the obvious
+ * yes/no.
+ *
+ * The answer is the *fewest* free units on any single night, not the average:
+ * a stay needs the same physical room for its whole length, so one sold-out
+ * night in the middle makes the entire range unsellable. Checking night by
+ * night is also what makes partial overlaps work — a booking that covers only
+ * the back half of the range still blocks it.
  */
-export function isRoomAvailable(room, bookings, checkIn, checkOut) {
-  if (!isValidRange(checkIn, checkOut)) return false
+export function unitsLeft(room, bookings, checkIn, checkOut) {
+  if (!isValidRange(checkIn, checkOut)) return 0
   const units = room.units ?? 1
 
-  // A single conflicting booking may span only part of the range, so capacity
-  // has to be checked night by night rather than across the range as a whole.
-  return nightsInRange(checkIn, checkOut).every((night) => {
-    const takenThatNight = bookings.filter(
-      (booking) =>
-        booking.roomId === room.id &&
-        booking.checkIn <= night &&
-        night < booking.checkOut,
-    ).length
-    return takenThatNight < units
-  })
+  let fewest = units
+  for (const night of nightsInRange(checkIn, checkOut)) {
+    fewest = Math.min(fewest, units - takenOn(bookings, room.id, night))
+    if (fewest <= 0) return 0
+  }
+  return fewest
+}
+
+/** Is at least one unit of this room free for the whole range? */
+export function isRoomAvailable(room, bookings, checkIn, checkOut) {
+  return unitsLeft(room, bookings, checkIn, checkOut) > 0
 }
 
 /** Rooms that fit the party and are free for the whole range. */
@@ -85,16 +109,9 @@ export function fullyBookedNights(rooms, bookings, guests, fromISODate, toISODat
   if (eligible.length === 0) return blocked
 
   for (const night of nightsInRange(fromISODate, toISODate)) {
-    const allFull = eligible.every((room) => {
-      const units = room.units ?? 1
-      const taken = bookings.filter(
-        (booking) =>
-          booking.roomId === room.id &&
-          booking.checkIn <= night &&
-          night < booking.checkOut,
-      ).length
-      return taken >= units
-    })
+    const allFull = eligible.every(
+      (room) => takenOn(bookings, room.id, night) >= (room.units ?? 1),
+    )
     if (allFull) blocked.add(night)
   }
   return blocked

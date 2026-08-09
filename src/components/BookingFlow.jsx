@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { priceFor } from '../lib/availability'
-import { CURRENCY, findRoom } from '../data/rooms'
+import { CURRENCY, findRoom, TOTAL_UNITS } from '../data/rooms'
+import { SORTS } from '../lib/sortOrders'
 import { formatLong, formatShort, nightsBetween } from '../lib/date'
 import { EMAIL_CONFIG } from '../lib/email'
 import { useBooking } from '../state/bookingContext'
@@ -29,6 +30,7 @@ export default function BookingFlow() {
     matches,
     rooms,
     roomAvailability,
+    setSort,
   } = useBooking()
 
   const sheetRef = useRef(null)
@@ -151,16 +153,21 @@ export default function BookingFlow() {
             <div className="sheet-body">
               {flow.error && <p className="notice">{flow.error}</p>}
 
-              {flow.step === 'rooms' && (
-                <RoomStep
-                  matches={matches}
-                  rooms={rooms}
-                  roomAvailability={roomAvailability}
-                  search={search}
-                  onChoose={chooseRoom}
-                  onChangeDates={handleChangeDates}
-                />
-              )}
+              {flow.step === 'rooms' &&
+                (flow.searching ? (
+                  <SearchingStep />
+                ) : (
+                  <RoomStep
+                    matches={matches}
+                    rooms={rooms}
+                    roomAvailability={roomAvailability}
+                    search={search}
+                    sort={flow.sort}
+                    onSort={setSort}
+                    onChoose={chooseRoom}
+                    onChangeDates={handleChangeDates}
+                  />
+                ))}
 
               {flow.step === 'details' && (
                 <DetailsStep
@@ -187,9 +194,53 @@ export default function BookingFlow() {
   )
 }
 
+/* ------------------------------------------------- step 1 — while searching */
+
+/**
+ * Placeholder rows shaped like the real results.
+ *
+ * Skeletons rather than a spinner because the layout is known in advance: the
+ * sheet keeps its height and the rows land where the grey blocks already were,
+ * instead of the content jumping when the answer arrives. The shimmer is CSS,
+ * so `prefers-reduced-motion` stops it without stopping the search.
+ */
+function SearchingStep() {
+  return (
+    <div aria-busy="true" aria-live="polite">
+      <p className="sr-only">Checking availability…</p>
+      <div className="option-list">
+        {[0, 1, 2].map((row) => (
+          <div className="option option-skeleton" key={row} aria-hidden="true">
+            <span className="option-art skeleton" />
+            <span className="option-main">
+              <span className="skeleton skeleton-line" style={{ width: '42%' }} />
+              <span className="skeleton skeleton-line sm" style={{ width: '68%' }} />
+            </span>
+            <span className="option-price">
+              <span className="skeleton skeleton-line" style={{ width: 62 }} />
+            </span>
+          </div>
+        ))}
+      </div>
+      <p className="search-note">
+        Checking all {TOTAL_UNITS} rooms for your dates…
+      </p>
+    </div>
+  )
+}
+
 /* ------------------------------------------------------------------ step 1 */
 
-function RoomStep({ matches, rooms, roomAvailability, search, onChoose, onChangeDates }) {
+function RoomStep({
+  matches,
+  rooms,
+  roomAvailability,
+  search,
+  sort,
+  onSort,
+  onChoose,
+  onChangeDates,
+}) {
   const tooSmall = rooms.filter((room) => room.maxGuests < search.guests)
   const taken = rooms.filter(
     (room) => room.maxGuests >= search.guests && !roomAvailability[room.id]?.free,
@@ -210,11 +261,38 @@ function RoomStep({ matches, rooms, roomAvailability, search, onChoose, onChange
     )
   }
 
+  const roomsFree = matches.reduce(
+    (sum, room) => sum + (roomAvailability[room.id]?.left ?? 0),
+    0,
+  )
+
   return (
     <>
+      <div className="result-head">
+        <p className="result-count" role="status">
+          <strong>{roomsFree}</strong> {roomsFree === 1 ? 'room' : 'rooms'} free across{' '}
+          {matches.length} {matches.length === 1 ? 'type' : 'types'}
+        </p>
+        <div className="sort" role="group" aria-label="Sort results">
+          <span className="sort-label">Sort by</span>
+          {Object.entries(SORTS).map(([key, order]) => (
+            <button
+              type="button"
+              key={key}
+              className={`sort-btn${sort === key ? ' on' : ''}`}
+              aria-pressed={sort === key}
+              onClick={() => onSort(key)}
+            >
+              {order.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="option-list">
         {matches.map((room) => {
           const { total } = priceFor(room, search.checkIn, search.checkOut)
+          const left = roomAvailability[room.id]?.left ?? 0
           return (
             <button
               type="button"
@@ -234,6 +312,13 @@ function RoomStep({ matches, rooms, roomAvailability, search, onChoose, onChange
                 <p>
                   {room.size} · sleeps {room.maxGuests} · {room.feature}
                 </p>
+                {/* Only once units have genuinely sold — a type sitting at
+                    full inventory is not scarce, however few rooms it has. */}
+                {left < room.units && (
+                  <span className="option-scarce">
+                    {left === 1 ? 'Last one left' : `${left} of ${room.units} left`}
+                  </span>
+                )}
               </span>
               <span className="option-price">
                 <b>

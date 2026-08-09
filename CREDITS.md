@@ -14,8 +14,13 @@ is downscaled by the browser at runtime.
 | `hero-panorama-{700,1200}.webp` | Hero — "Panorama King — mountain view" | Meklay YOTKHAMSAY | [Unsplash](https://unsplash.com/photos/a-bedroom-with-a-view-of-the-mountains-AAZaK31x6FM) |
 | `hero-spa-{500,800}.webp` | Hero — "The spa at dusk" | Patrick Robert Doyle | [Unsplash](https://unsplash.com/photos/a-large-indoor-swimming-pool-with-a-view-of-the-trees-ls2i2Mh0M4Q) |
 | `hero-detail-500.webp` | Hero — small accent tile | Dan Farrell | [Unsplash](https://unsplash.com/photos/brown-throw-pillow-p7gBY4Ek-Es) |
+| `room-single-{420,800}.webp` | Pine Single | Hans | [Unsplash](https://unsplash.com/photos/a-bed-in-a-room-with-wooden-walls-_oI7jOqLzmg) |
+| `room-twin-{420,800}.webp` | Forest Twin | Clay Banks | [Unsplash](https://unsplash.com/photos/a-room-with-two-beds-and-a-rug-on-the-floor-vFXMsnuOMTg) |
 | `room-garden-{420,800}.webp` | Garden Suite | Andrew Ridley | [Unsplash](https://unsplash.com/photos/brown-and-white-blanket-beside-with-framed-glass-window-9sTuZHhYyMw) |
+| `room-attic-{420,800}.webp` | Attic Loft | Clay Banks | [Unsplash](https://unsplash.com/photos/a-bedroom-with-a-bed-and-a-fireplace-in-it-W3bI-XFSu5A) |
 | `room-panorama-{420,800}.webp` | Panorama King | Gabriel Tenan | [Unsplash](https://unsplash.com/photos/pendant-lamp-in-front-of-window-kU6xGAcd7jQ) |
+| `room-spa-{420,800}.webp` | Spa Suite | Clay Banks | [Unsplash](https://unsplash.com/photos/a-bathroom-with-a-tub-sink-and-window-6HvSk68cZ3k) |
+| `room-family-{420,800}.webp` | Family Chalet | Clay Banks | [Unsplash](https://unsplash.com/photos/a-living-room-with-a-fire-place-inside-of-it-f_6yPIgDxxs) |
 | `room-villa-{420,800}.webp` | Royal Villa | Roberto Nickson | [Unsplash](https://unsplash.com/photos/lounge-chairs-on-wooden-porch-during-golden-hour--UpZzX87_tc) |
 | `amenity-spa-600.webp` | Amenities — Forest Spa | HUUM | [Unsplash](https://unsplash.com/photos/a-room-with-a-wood-floor-and-a-wood-wall-with-a-black-box-bdkQFJYFNK4) |
 | `amenity-pool-600.webp` | Amenities — Heated Pool | Andreas Strandman | [Unsplash](https://unsplash.com/photos/steam-rises-from-the-ground-in-front-of-a-mountain-o4AeETE-CNA) |
