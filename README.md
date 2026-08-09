@@ -76,6 +76,35 @@ npm run dev
 npm run build
 ```
 
+## Tests
+
+```bash
+npm test
+```
+
+77 tests over the engine and the write path — the parts where being wrong means
+selling a room twice. They run on every push and pull request via GitHub
+Actions, alongside lint and build.
+
+The suite is deliberately concentrated on boundaries rather than coverage
+percentage:
+
+- **The half-open night range.** Checking out on the 15th and arriving on the
+  15th must both succeed; sharing a single night must not.
+- **`unitsLeft` answering with the worst night, not the average.** A room free
+  on two nights of a three-night stay is not sellable, and an averaging
+  implementation would cheerfully double-book it.
+- **Partial overlaps** at the head and the tail of a range.
+- **DST.** `nightsBetween` across a spring-forward boundary, where the raw
+  millisecond difference is 23 hours a day and an unrounded result turns a
+  three-night stay into a two-night charge.
+- **`create` refusing**, since that is the only place that actually can — it
+  re-reads stored state rather than trusting the total it was handed.
+
+They were checked by mutation rather than by going green: inverting the overlap
+comparison fails 2 tests, swapping `Math.min` for `Math.max` in `unitsLeft`
+fails 14, and moving the night boundary by one day fails 5.
+
 ## Architecture
 
 ```

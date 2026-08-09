@@ -3,19 +3,91 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AURELIA — Boutique Hotel &amp; Spa</title>
+
+    <title>AURELIA — Hotel Booking System (Demo)</title>
     <meta
       name="description"
-      content="AURELIA — a boutique hotel and spa between the mountains and the pine forest. Check live availability and reserve one of nineteen rooms in under a minute."
+      content="A hotel booking demo built on a real availability engine: 19 rooms, live per-night inventory, and no way to double-book. React + Vite, by Otabek Mamadaliev."
     />
+    <link rel="canonical" href="https://aurelia-booking.vercel.app/" />
+    <meta name="author" content="Otabek Mamadaliev" />
     <meta name="theme-color" content="#faf7f1" />
+
+    <!-- Open Graph. `og:image` stays JPEG on purpose — several social scrapers
+         still fail to render WebP, which is the one place a broken image costs
+         the most. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AURELIA" />
+    <meta property="og:url" content="https://aurelia-booking.vercel.app/" />
+    <meta property="og:title" content="AURELIA — Hotel Booking System (Demo)" />
+    <meta
+      property="og:description"
+      content="A hotel booking demo built on a real availability engine: 19 rooms, live per-night inventory, and no way to double-book."
+    />
+    <meta
+      property="og:image"
+      content="https://aurelia-booking.vercel.app/og-image.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="A hotel bedroom facing a wall of glass over forested mountains at sunset"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AURELIA — Hotel Booking System (Demo)" />
+    <meta
+      name="twitter:description"
+      content="A hotel booking demo built on a real availability engine: 19 rooms, live per-night inventory, and no way to double-book."
+    />
+    <meta
+      name="twitter:image"
+      content="https://aurelia-booking.vercel.app/og-image.jpg"
+    />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    <!--
+      Structured data describes what this page actually is: a portfolio demo.
+
+      It is deliberately NOT `Hotel` markup. Aurelia is fictional, and a Hotel
+      entity carrying the "4.9 from 2,400 guests" figure shown on the page would
+      be fabricated review markup — the kind that can surface as star ratings in
+      search results for a hotel nobody can stay at. Marketing copy on a page
+      that says "demo project" is one thing; machine-readable claims that feed
+      rich results are another.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AURELIA — Hotel Booking System",
+        "url": "https://aurelia-booking.vercel.app/",
+        "description": "A portfolio demo of a hotel booking system built around a real availability engine. The hotel is fictional and all reservations are demo data.",
+        "inLanguage": "en",
+        "image": "https://aurelia-booking.vercel.app/og-image.jpg",
+        "author": {
+          "@type": "Person",
+          "name": "Otabek Mamadaliev",
+          "url": "https://otabekmamadaliev.com"
+        },
+        "creator": {
+          "@type": "Person",
+          "name": "Otabek Mamadaliev",
+          "url": "https://otabekmamadaliev.com"
+        },
+        "isAccessibleForFree": true,
+        "keywords": "hotel booking, availability engine, React, Vite, portfolio"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
