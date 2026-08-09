@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { CURRENCY } from '../data/rooms'
+import { CURRENCY, MAX_PARTY } from '../data/rooms'
 import { formatShort, nightsBetween } from '../lib/date'
 import { useBooking } from '../state/bookingContext'
 import Calendar from './Calendar'
-
-const MAX_GUESTS = 4
 
 export default function BookingBar() {
   const {
@@ -18,7 +16,8 @@ export default function BookingBar() {
     matches,
     cheapest,
     rooms,
-    openFlow,
+    runSearch,
+    flow,
   } = useBooking()
 
   // Only one popover at a time: 'dates' | 'guests' | null.
@@ -153,8 +152,8 @@ export default function BookingBar() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => setGuests(Math.min(MAX_GUESTS, search.guests + 1))}
-                    disabled={search.guests >= MAX_GUESTS}
+                    onClick={() => setGuests(Math.min(MAX_PARTY, search.guests + 1))}
+                    disabled={search.guests >= MAX_PARTY}
                     aria-label="One guest more"
                   >
                     +
@@ -186,10 +185,17 @@ export default function BookingBar() {
         <button
           type="button"
           className="bb-btn"
-          onClick={() => openFlow()}
-          disabled={!rangeIsValid}
+          onClick={runSearch}
+          disabled={!rangeIsValid || flow.searching}
         >
-          Search
+          {flow.searching ? (
+            <>
+              <span className="spinner" aria-hidden="true" />
+              Searching
+            </>
+          ) : (
+            'Search'
+          )}
         </button>
       </div>
 

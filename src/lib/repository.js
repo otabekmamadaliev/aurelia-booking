@@ -103,6 +103,25 @@ export class UnavailableError extends Error {
   }
 }
 
+/**
+ * Simulated round-trip for the availability search.
+ *
+ * The loading state in the UI is not theatre: a real deployment queries a
+ * database across a network here, and that is the one call in this app slow
+ * enough for a guest to notice. Keeping the latency in the repository — rather
+ * than a `setTimeout` in a component — means the delay disappears on its own
+ * the day this file starts talking to a real backend, instead of having to be
+ * hunted down and deleted.
+ *
+ * Jittered, because a fixed delay reads as a fake progress bar.
+ */
+const SEARCH_LATENCY = { min: 450, max: 900 }
+
+function simulatedLatency() {
+  const { min, max } = SEARCH_LATENCY
+  return min + Math.random() * (max - min)
+}
+
 export const roomRepository = {
   async list() {
     return ROOMS
@@ -111,6 +130,16 @@ export const roomRepository = {
 
 export const bookingRepository = {
   async list() {
+    return loadState().bookings
+  },
+
+  /**
+   * Re-read availability for a search. Genuinely re-reads the store rather than
+   * trusting what the UI already has, so a reservation made in another tab
+   * shows up here — the same reason `create` re-checks before writing.
+   */
+  async search() {
+    await new Promise((resolve) => setTimeout(resolve, simulatedLatency()))
     return loadState().bookings
   },
 

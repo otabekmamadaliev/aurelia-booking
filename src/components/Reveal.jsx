@@ -7,7 +7,13 @@ import { motion, useReducedMotion } from 'framer-motion'
  * Motion to render the element in its final state and skip the animation
  * altogether — not merely to shorten it.
  */
-export default function Reveal({ children, delay = 0, className, as: Tag = 'div' }) {
+export default function Reveal({
+  children,
+  delay = 0,
+  className,
+  as: Tag = 'div',
+  ...rest
+}) {
   const reduceMotion = useReducedMotion()
   const MotionTag = motion[Tag]
 
@@ -18,6 +24,7 @@ export default function Reveal({ children, delay = 0, className, as: Tag = 'div'
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.6, delay, ease: [0.22, 0.61, 0.36, 1] }}
+      {...rest}
     >
       {children}
     </MotionTag>

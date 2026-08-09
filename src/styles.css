@@ -856,6 +856,26 @@ section {
   background: linear-gradient(140deg, #e6d8bd, #b3873e 60%, #6d5323);
 }
 
+.r4 {
+  background: linear-gradient(140deg, #d9cbb2, #a8916c 55%, #675a44);
+}
+
+.r5 {
+  background: linear-gradient(140deg, #cfd6c6, #8fa088 58%, #47543f);
+}
+
+.r6 {
+  background: linear-gradient(140deg, #e2cfa8, #a17f4c 55%, #4f3f28);
+}
+
+.r7 {
+  background: linear-gradient(140deg, #cddcdd, #86a2a6 58%, #3f5356);
+}
+
+.r8 {
+  background: linear-gradient(140deg, #e8d3b4, #b07f4c 52%, #5b3f28);
+}
+
 .room-tag {
   position: absolute;
   top: 16px;
@@ -914,12 +934,22 @@ section {
   color: var(--green);
 }
 
+.room-status.scarce {
+  color: var(--brass);
+}
+
 .room-status.taken {
   color: var(--danger);
 }
 
 .room-status .dot {
   margin-right: 0;
+  background: currentColor;
+}
+
+.room-more-note {
+  margin-top: 28px;
+  text-align: center;
 }
 
 .room-foot {
@@ -1334,9 +1364,163 @@ footer {
   color: var(--ink-soft);
 }
 
+/* ------------------------------------------------- results: head & sorting -- */
+
+.result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.result-count {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.result-count strong {
+  font-family: var(--serif);
+  font-size: 19px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sort-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.sort-btn {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 6px 14px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: 0.2s;
+}
+
+.sort-btn:hover {
+  border-color: var(--brass);
+  color: var(--ink);
+}
+
+.sort-btn.on {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--ivory);
+}
+
 .option-list {
   display: grid;
   gap: 14px;
+}
+
+.option-scarce {
+  display: inline-block;
+  margin-top: 7px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--brass);
+  border: 1px solid rgba(179, 135, 62, 0.4);
+  background: rgba(179, 135, 62, 0.09);
+  padding: 3px 9px;
+  border-radius: 2px;
+}
+
+/* ------------------------------------------------------ loading & skeletons -- */
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(250, 247, 241, 0.35);
+  border-top-color: var(--ivory);
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: -2px;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Skeleton rows are shaped like real results so the sheet keeps its height and
+   nothing jumps when the answer lands. */
+.option-skeleton {
+  cursor: default;
+  border-color: var(--line);
+}
+
+.option-skeleton:hover {
+  transform: none;
+  border-color: var(--line);
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--ivory-2);
+  border-radius: 2px;
+  display: block;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.75),
+    transparent
+  );
+  animation: shimmer 1.25s infinite;
+}
+
+.skeleton-line {
+  height: 13px;
+  margin-bottom: 9px;
+}
+
+.skeleton-line.sm {
+  height: 10px;
+  margin-bottom: 0;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.search-note {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
 }
 
 .option {
@@ -1733,5 +1917,18 @@ footer {
   .photo-kb.is-loaded {
     animation: none;
     transform: scale(1.05);
+  }
+
+  /* The shimmer stops, but the skeletons stay: they are what keeps the sheet
+     from collapsing while the search is in flight. The spinner keeps turning
+     at a slower rate rather than freezing mid-search, since a still spinner
+     reads as a hang. */
+  .skeleton::after {
+    animation: none;
+    display: none;
+  }
+
+  .spinner {
+    animation-duration: 1.6s !important;
   }
 }

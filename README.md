@@ -17,8 +17,22 @@ picked.
   that night. A range is rejected outright if it would span a fully-booked night.
 - **No double-booking.** Availability is re-verified at write time, not just at
   render time, so a room taken in another tab cannot be booked twice.
-- **Party-aware search.** Rooms that cannot sleep the party are filtered out, and
-  which nights are struck out changes with the guest count.
+- **Real inventory.** Eight room types holding **19 physical rooms** between
+  them — the number in the hero copy is summed from the data, not typed. Most
+  types have several units, so booking one decrements the count rather than
+  selling the type out, and "2 of 3 left" is derived from what is actually
+  unsold.
+- **Honest scarcity.** A warning appears only once units have genuinely sold. A
+  type sitting at full inventory never says "only 2 left", however few rooms it
+  has — the manufactured-urgency trick this kind of site is usually caught doing.
+- **Party-aware search.** Rooms that cannot sleep the party are filtered out,
+  which nights are struck out changes with the guest count, and the grid puts
+  bookable rooms first so a party of five never has to expand a list to find the
+  one room that fits them.
+- **Search with a real round-trip.** Pressing Search re-reads availability
+  behind a skeleton loading state. The latency lives in the repository, not in a
+  component — it is where a network call would actually be, and it disappears on
+  its own when this talks to a real backend.
 - **Live price.** `nights × nightly rate`, recomputed on every date change.
 - **Confirmation e-mail** to the guest, with a copy to the hotel.
 - **Persists in `localStorage`,** so the demo remembers your reservations between
