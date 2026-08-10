@@ -1,3 +1,5 @@
+import { lazy, Suspense } from 'react'
+import { Route, Routes } from 'react-router-dom'
 import Amenities from './components/Amenities'
 import BookingBar from './components/BookingBar'
 import BookingFlow from './components/BookingFlow'
@@ -11,7 +13,13 @@ import Rooms from './components/Rooms'
 import Testimonial from './components/Testimonial'
 import { BookingProvider } from './state/BookingProvider'
 
-export default function App() {
+/**
+ * The back office is code-split. Guests are the overwhelming majority of
+ * traffic and must never pay to download a staff tool they will never open.
+ */
+const AdminApp = lazy(() => import('./admin/AdminApp'))
+
+function PublicSite() {
   return (
     <BookingProvider>
       <a className="skip-link" href="#book">
@@ -31,5 +39,21 @@ export default function App() {
       <Footer />
       <BookingFlow />
     </BookingProvider>
+  )
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<PublicSite />} />
+      <Route
+        path="/admin/*"
+        element={
+          <Suspense fallback={<p className="admin-loading">Loading back office…</p>}>
+            <AdminApp />
+          </Suspense>
+        }
+      />
+    </Routes>
   )
 }

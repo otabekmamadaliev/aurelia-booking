@@ -1,0 +1,723 @@
+/* =========================================================================
+   Back office.
+   Shares the palette with the guest site but not its pace — this is a tool
+   people use all day, so it is denser, flatter and quieter.
+   ========================================================================= */
+
+.admin {
+  min-height: 100vh;
+  background: var(--ivory-2);
+  padding-bottom: 60px;
+}
+
+/* The guest stylesheet gives every `section` 110px of vertical air, which is
+   right for a landing page and absurd for a dense tool. The back office uses
+   `section` for grouping, so that rule has to be undone here rather than the
+   markup contorted to avoid the element. */
+.admin section {
+  padding: 0;
+}
+
+/* --------------------------------------------------------------- gate --- */
+
+.gate {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--green-deep);
+  padding: 24px;
+}
+
+.gate-card {
+  background: var(--card);
+  border-radius: 4px;
+  padding: 38px 34px;
+  width: min(420px, 100%);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.6);
+}
+
+.gate-card h1 {
+  font-size: 27px;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.gate-note {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.gate-note code {
+  background: var(--ivory-2);
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-size: 12px;
+}
+
+/* ---------------------------------------------------------------- bar --- */
+
+.admin-bar {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 0 26px;
+  height: 62px;
+  background: var(--green-deep);
+  color: var(--ivory);
+  flex-wrap: wrap;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.admin-bar .logo {
+  font-size: 17px;
+  color: #fff;
+}
+
+.admin-tag {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brass-light);
+}
+
+.admin-nav {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.admin-nav a {
+  padding: 8px 15px;
+  border-radius: 2px;
+  font-size: 13px;
+  color: #b9c9bd;
+  transition: 0.2s;
+}
+
+.admin-nav a:hover {
+  background: rgba(250, 247, 241, 0.08);
+  color: #fff;
+}
+
+.admin-nav a.active {
+  background: var(--brass);
+  color: #fff;
+}
+
+.admin-exit {
+  font-size: 12px;
+  color: #9fb3a6;
+}
+
+.admin-exit:hover {
+  color: var(--brass-light);
+}
+
+.admin-warning {
+  background: #fdf6e6;
+  border-bottom: 1px solid #e8d9b4;
+  color: #6d5323;
+  font-size: 12.5px;
+  line-height: 1.6;
+  padding: 11px 26px;
+}
+
+.admin-loading {
+  padding: 60px 26px;
+  color: var(--ink-soft);
+}
+
+.admin-page {
+  padding: 26px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ---------------------------------------------------------------- kpi --- */
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.kpi {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 18px 20px;
+}
+
+.kpi-label {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  display: block;
+  font-family: var(--serif);
+  font-size: 31px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.kpi-hint {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 5px;
+}
+
+/* -------------------------------------------------------------- panels -- */
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 20px 22px;
+  margin-bottom: 22px;
+}
+
+.panel h3 {
+  font-size: 17px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel h3 .count {
+  font-family: var(--sans);
+  font-size: 11px;
+  background: var(--ivory-2);
+  border-radius: 20px;
+  padding: 2px 9px;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.panel-empty {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.panel-note {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-top: 12px;
+}
+
+.panel-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.panel-row .panel {
+  margin-bottom: 0;
+}
+
+.guest-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.guest-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13.5px;
+}
+
+.gl-name {
+  font-weight: 500;
+  flex: 1;
+}
+
+.gl-room {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.gl-ref {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--brass);
+}
+
+/* ---------------------------------------------------------------- bars -- */
+
+.bars {
+  display: flex;
+  gap: 5px;
+  align-items: flex-end;
+  height: 116px;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+}
+
+.bar-track {
+  flex: 1;
+  width: 100%;
+  background: var(--ivory-2);
+  border-radius: 2px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.bar-fill {
+  width: 100%;
+  background: var(--green);
+  border-radius: 2px 2px 0 0;
+  transition: height 0.3s;
+}
+
+.bar-fill.full {
+  background: var(--danger);
+}
+
+.bar-label {
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+
+/* --------------------------------------------------------------- chart -- */
+
+.chart-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.chart-head h3 {
+  font-size: 20px;
+}
+
+.chart-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.chart-nav button {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chart-nav button:hover {
+  border-color: var(--brass);
+}
+
+/* The chart is the one thing here allowed to scroll sideways. */
+.chart-scroll,
+.table-scroll {
+  overflow-x: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.chart {
+  display: grid;
+  min-width: 760px;
+}
+
+.chart-corner,
+.chart-day {
+  position: sticky;
+  top: 0;
+  background: var(--ivory-2);
+  border-bottom: 1px solid var(--line);
+  z-index: 2;
+}
+
+.chart-corner {
+  padding: 9px 12px;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 600;
+  left: 0;
+  z-index: 3;
+}
+
+.chart-day {
+  padding: 6px 0;
+  text-align: center;
+  border-left: 1px solid var(--line);
+}
+
+.chart-day.weekend {
+  background: #ece5d6;
+}
+
+.chart-day.is-today {
+  background: var(--green);
+  color: var(--ivory);
+}
+
+.cd-dow {
+  display: block;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.cd-num {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chart-room {
+  padding: 0 12px;
+  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chart-cell {
+  height: 38px;
+  border-left: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 0;
+  background: none;
+  font: inherit;
+  position: relative;
+}
+
+.chart-cell.free {
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 5px,
+    rgba(228, 221, 206, 0.4) 5px,
+    rgba(228, 221, 206, 0.4) 10px
+  );
+}
+
+.chart-cell.is-today {
+  box-shadow: inset 2px 0 0 var(--green);
+}
+
+/* A stay is drawn as one continuous run, rounded only at its true ends. */
+.chart-cell.taken {
+  cursor: pointer;
+  color: #fff;
+  overflow: visible;
+}
+
+/* Drop the grid line inside a run so a four-night stay reads as one bar rather
+   than four adjacent blocks. */
+.chart-cell.taken:not(.run-start) {
+  border-left-color: transparent;
+}
+
+.chart-cell.taken::before {
+  content: '';
+  position: absolute;
+  inset: 5px 0;
+  background: var(--green);
+}
+
+.chart-cell.taken.staff::before {
+  background: var(--brass);
+}
+
+.chart-cell.taken.seed::before {
+  background: #6f8478;
+}
+
+.chart-cell.run-start::before {
+  left: 3px;
+  border-radius: 3px 0 0 3px;
+}
+
+.chart-cell.run-end::before {
+  right: 3px;
+  border-radius: 0 3px 3px 0;
+}
+
+.cell-name {
+  position: absolute;
+  inset: 5px 0 5px 8px;
+  display: flex;
+  align-items: center;
+  font-size: 11.5px;
+  white-space: nowrap;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding: 14px 2px 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+  flex-wrap: wrap;
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.swatch {
+  width: 13px;
+  height: 13px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.swatch.guest {
+  background: var(--green);
+}
+.swatch.staff {
+  background: var(--brass);
+}
+.swatch.seed {
+  background: #6f8478;
+}
+.swatch.free {
+  background: var(--ivory-2);
+  border: 1px solid var(--line);
+}
+
+/* -------------------------------------------------------- reservations -- */
+
+.res-controls {
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.res-search {
+  flex: 1;
+  min-width: 240px;
+  margin-bottom: 0;
+}
+
+.res-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  min-width: 900px;
+}
+
+.res-table th {
+  text-align: left;
+  padding: 11px 14px;
+  background: var(--ivory-2);
+  border-bottom: 1px solid var(--line);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.res-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.res-table tbody tr:hover {
+  background: #fbf9f4;
+}
+
+.table-empty {
+  text-align: center;
+  color: var(--ink-soft);
+  padding: 34px 0 !important;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--brass);
+}
+
+.res-name {
+  display: block;
+  font-weight: 500;
+}
+
+.res-email {
+  display: block;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+.res-unit {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.res-actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.res-actions .link-btn + .link-btn {
+  margin-left: 12px;
+}
+
+.link-btn.danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.pill {
+  display: inline-block;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--ivory-2);
+  color: var(--ink-soft);
+}
+
+.pill.in-house {
+  background: #e4efe6;
+  color: var(--green);
+}
+
+.pill.upcoming {
+  background: #f6ecd9;
+  color: #7a5a20;
+}
+
+.pill.desk {
+  background: #efe7d7;
+  color: var(--brass);
+  margin-left: 6px;
+}
+
+/* ---------------------------------------------------------------- peek -- */
+
+.peek {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 90;
+  width: min(320px, calc(100vw - 44px));
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 20px 22px;
+  box-shadow: 0 30px 60px -30px rgba(27, 26, 22, 0.5);
+}
+
+.peek h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.peek .ref {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--brass);
+  font-weight: 600;
+}
+
+.peek-line {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.peek-note {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.peek-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1;
+}
+
+@media (max-width: 700px) {
+  .admin-bar {
+    height: auto;
+    padding: 12px 18px;
+    gap: 12px;
+  }
+
+  .admin-nav {
+    margin-left: 0;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .admin-page {
+    padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar-fill {
+    transition: none;
+  }
+}

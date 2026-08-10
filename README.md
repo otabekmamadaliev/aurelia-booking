@@ -53,6 +53,36 @@ All images are WebP, cut to the widths the layout actually uses (~740 KB for
 the whole page), with `srcset` on the hero and room images. See
 [CREDITS.md](CREDITS.md) for photographers and licence.
 
+## Back office
+
+`/admin` — passcode `aurelia`.
+
+Guests use a booking page once; staff live in the back office every day, so it
+is a different application that happens to read the same data. It has its own
+`useAdminData` hook rather than sharing the guest context, because the two need
+opposite things: a guest has a search and a party size, staff need to cancel
+somebody else's reservation.
+
+- **Dashboard** — occupancy tonight and across 30 days, **ADR**, **RevPAR**,
+  rooms revenue, a fourteen-night forward look, and today's arrivals,
+  departures and in-house list.
+- **Room chart** — the tape chart, 19 physical rooms down the side against 14
+  nights. This is why `allocation.js` exists: the booking side sells room
+  *types*, but a chart has to show room 2 of 4, because that is what
+  housekeeping cleans and what the guest is handed a key to.
+- **Reservations** — search across name, reference and email at once (the desk
+  does not know which one the caller will read out), filter by status, cancel.
+
+Two honest limits, stated in the UI as well as here:
+
+- **The passcode is not security.** It is compared in the browser, so anyone can
+  read it out of the bundle. It exists to keep the back office out of the way
+  and to mark where real authentication attaches. A login screen that implied
+  real protection would be worse than none.
+- **Nothing is shared between devices.** Every reservation still lives in one
+  browser's `localStorage`. Until that changes this is a working simulation of
+  hotel software, not hotel software.
+
 ## Accessibility & motion
 
 - Full keyboard support in the calendar: arrows move day by day, `PageUp` /
