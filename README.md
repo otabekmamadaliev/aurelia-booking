@@ -57,6 +57,11 @@ the whole page), with `srcset` on the hero and room images. See
 
 `/admin` — passcode `aurelia`.
 
+> Client-side routing means `/admin` has no file behind it, so `vercel.json`
+> rewrites unmatched paths to the app shell. Vercel resolves real files on disk
+> first, so bundles and images are unaffected. (JSON has no comments and Vercel
+> validates the file against its schema, which is why that note lives here.)
+
 Guests use a booking page once; staff live in the back office every day, so it
 is a different application that happens to read the same data. It has its own
 `useAdminData` hook rather than sharing the guest context, because the two need

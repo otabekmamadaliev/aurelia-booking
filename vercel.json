@@ -1,10 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
-    {
-      "comment": "Client-side routing: /admin has no file behind it, so anything that is not a real static asset falls through to the app shell. Vercel matches files on disk first, so bundles and images are unaffected.",
-      "source": "/((?!assets/).*)",
-      "destination": "/index.html"
-    }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
