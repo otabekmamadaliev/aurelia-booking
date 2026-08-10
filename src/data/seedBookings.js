@@ -32,11 +32,25 @@ const FULL_HOUSE = [
  * `count` equal to the type's `units` sells it out for those nights.
  */
 const STAYS = [
+  // Guests already in the house, and today's movements. Without these the back
+  // office opens on an empty hotel with no arrivals and no departures, which is
+  // not what a working property looks like on any given morning. Negative
+  // offsets are stays that began before today — they also give the reservation
+  // list a past to filter by.
+  { roomId: 'panorama-king', from: -2, to: 2, count: 1, guest: 'W. Nakamura' },
+  { roomId: 'forest-twin', from: -2, to: 3, count: 1, guest: 'P. Dubois' },
+  { roomId: 'garden-suite', from: -1, to: 1, count: 2, guest: 'F. Rossi' },
+  { roomId: 'attic-loft', from: -3, to: 0, count: 1, guest: 'B. Novák' }, // departs today
+  { roomId: 'spa-suite', from: 0, to: 4, count: 1, guest: 'L. Chen' }, // arrives today
+  { roomId: 'pine-single', from: 0, to: 2, count: 1, guest: 'K. Adeyemi' }, // arrives today
+
   { roomId: 'garden-suite', from: 2, to: 5, count: 3, guest: 'M. Okonkwo' },
   { roomId: 'forest-twin', from: 3, to: 6, count: 4, guest: 'S. Bergström' },
   { roomId: 'panorama-king', from: 2, to: 4, count: 1, guest: 'D. Aoyama' },
   { roomId: 'royal-villa', from: 1, to: 4, count: 1, guest: 'The Ferrante family' },
-  { roomId: 'spa-suite', from: 4, to: 7, count: 1, guest: 'C. Almeida' },
+  // Ends on night +5: the full-house block owns every room on +6 and +7, so a
+  // stay running into those nights would oversell the type.
+  { roomId: 'spa-suite', from: 4, to: 6, count: 1, guest: 'C. Almeida' },
   { roomId: 'attic-loft', from: 9, to: 12, count: 2, guest: 'J. Whitfield' },
   { roomId: 'family-chalet', from: 10, to: 14, count: 1, guest: 'The Ivanov party' },
   { roomId: 'garden-suite', from: 12, to: 15, count: 2, guest: 'R. Nowak' },

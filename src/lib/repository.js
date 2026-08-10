@@ -176,11 +176,14 @@ export const bookingRepository = {
       checkIn: draft.checkIn,
       checkOut: draft.checkOut,
       guests: draft.guests,
-      guestName: draft.guestName.trim(),
-      guestEmail: draft.guestEmail.trim(),
+      guestName: (draft.guestName ?? '').trim(),
+      // Optional for a walk-in taken at the desk: staff cannot invent an
+      // address, and refusing the booking over it would be worse than storing
+      // a reservation nobody can email a confirmation for.
+      guestEmail: (draft.guestEmail ?? '').trim(),
       notes: (draft.notes ?? '').trim(),
       total: draft.total,
-      source: 'guest',
+      source: draft.source === 'staff' ? 'staff' : 'guest',
       createdAt: new Date().toISOString(),
     }
 
@@ -197,6 +200,25 @@ export const bookingRepository = {
       ),
     })
     return true
+  },
+
+  /**
+   * Cancel anything, including house bookings.
+   *
+   * Separate from `cancel` on purpose: the guest-facing path must never be able
+   * to delete a reservation it does not own, and the difference between the two
+   * is exactly the authorisation boundary a real backend would enforce on the
+   * server. Keeping them as two methods means that boundary already has a shape
+   * to attach to instead of having to be retrofitted.
+   */
+  async cancelAsStaff(bookingId) {
+    const state = loadState()
+    const before = state.bookings.length
+    writeState({
+      ...state,
+      bookings: state.bookings.filter((booking) => booking.id !== bookingId),
+    })
+    return state.bookings.length !== before
   },
 
   /** Wipe everything and re-seed — the demo's "start over" button. */
