@@ -122,13 +122,53 @@
   color: var(--brass-light);
 }
 
-.admin-warning {
-  background: #fdf6e6;
-  border-bottom: 1px solid #e8d9b4;
-  color: #6d5323;
+.admin-banner {
   font-size: 12.5px;
   line-height: 1.6;
   padding: 11px 26px;
+  border-bottom: 1px solid;
+}
+
+/* Amber when the data is confined to this browser, green when it is genuinely
+   shared. The banner is the one place the app states which of the two is
+   running, so the two states must not look alike. */
+.admin-banner.local {
+  background: #fdf6e6;
+  border-color: #e8d9b4;
+  color: #6d5323;
+}
+
+.admin-banner.shared {
+  background: #e8f0e9;
+  border-color: #c3d8c8;
+  color: #1e3a2f;
+}
+
+.admin-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-exit.as-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+}
+
+.admin-footnote {
+  padding: 18px 26px 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.admin-footnote code {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 1px 5px;
 }
 
 .admin-loading {

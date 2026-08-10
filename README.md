@@ -53,6 +53,49 @@ All images are WebP, cut to the widths the layout actually uses (~740 KB for
 the whole page), with `srcset` on the hero and room images. See
 [CREDITS.md](CREDITS.md) for photographers and licence.
 
+## Two backends, one seam
+
+Every caller imports `roomRepository` and `bookingRepository` from
+`src/lib/repository.js`, and has done since the first commit when both were
+backed by `localStorage`. Adding Postgres changed none of them — they already
+awaited, already handled a rejected write, and already treated *unavailable* as
+an error rather than a return value.
+
+| | No credentials | With Supabase |
+| --- | --- | --- |
+| Storage | this browser | Postgres |
+| Shared across devices | no | yes |
+| No-double-booking holds | within one tab | everywhere |
+| Admin sign-in | passcode, protects nothing | real auth, enforced by RLS |
+| Guest list readable by visitors | n/a | no — refused by the database |
+
+Leaving the credentials unset is a legitimate way to run this: a fresh clone
+gets the entire demo with no setup. See [docs/SUPABASE.md](docs/SUPABASE.md) to
+connect a project.
+
+### What Postgres enforces that a browser cannot
+
+**Availability.** Reservations can only be created through `create_booking`,
+which takes an advisory lock on the room type, recounts the busiest night in the
+requested range, and inserts only if a unit is genuinely free — all inside one
+transaction. Two guests pressing Confirm in the same instant queue behind each
+other instead of both reading the same free count. The client-side check is a
+courtesy; this is the guarantee.
+
+It is the same rule as `unitsLeft`, expressed in SQL: the *maximum* occupancy
+across the nights requested, never the average, because a stay needs the same
+physical room throughout.
+
+**Privacy.** Anonymous visitors have no read access to `bookings`. They read
+`availability` — the same rows with names, addresses and notes removed — which
+is all the engine needs, since it only ever looks at `roomId`, `checkIn` and
+`checkOut`. The guest list is not hidden by the interface; it is refused by the
+database.
+
+**Bundle cost: none when unused.** The Supabase client is behind a dynamic
+import, so a build without credentials never ships it. Eager JavaScript is
+~127 kB gzipped either way.
+
 ## Back office
 
 `/admin` — passcode `aurelia`.

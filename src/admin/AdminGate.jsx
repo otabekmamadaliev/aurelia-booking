@@ -1,31 +1,35 @@
 import { useState } from 'react'
-import { DEMO_PASSCODE, unlock } from './session'
+import { DEMO_PASSCODE, signIn, usesRealAuth } from './auth'
 
 /**
- * The demo access gate.
+ * Staff sign-in.
  *
- * This is NOT security, and the note below says so where staff can read it.
- * The passcode is compared in the browser, so anyone can read it out of the
- * bundle or step past it in devtools — that is inherent to having no server,
- * not an oversight to be patched later.
- *
- * It earns its place for two honest reasons: it keeps the back office out of
- * the way of someone browsing the guest site, and it marks exactly where real
- * authentication attaches once there is a server to do it. A login screen that
- * quietly implied real protection would be worse than none at all, because
+ * Renders one of two forms depending on whether the app has a database behind
+ * it, and says which. When Supabase is configured this is real authentication
+ * and the guest list is unreachable without it. When it is not, the passcode is
+ * compared in the browser and protects nothing — showing the same confident
+ * login screen in both cases would be the dishonest version of this, because
  * somebody might trust it with a real guest list.
  */
 export default function AdminGate({ onUnlock }) {
-  const [value, setValue] = useState('')
-  const [wrong, setWrong] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [passcode, setPasscode] = useState('')
+  const [error, setError] = useState(null)
+  const [busy, setBusy] = useState(false)
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    if (value.trim().toLowerCase() !== DEMO_PASSCODE) {
-      setWrong(true)
+    setBusy(true)
+    setError(null)
+
+    const result = await signIn({ email, password, passcode })
+    setBusy(false)
+
+    if (!result.ok) {
+      setError(result.message)
       return
     }
-    unlock()
     onUnlock()
   }
 
@@ -35,36 +39,86 @@ export default function AdminGate({ onUnlock }) {
         <p className="eyebrow">Aurelia · Back office</p>
         <h1>Staff sign-in</h1>
 
-        <div className="field">
-          <label htmlFor="passcode">Passcode</label>
-          <input
-            id="passcode"
-            type="password"
-            autoComplete="off"
-            value={value}
-            onChange={(event) => {
-              setValue(event.target.value)
-              setWrong(false)
-            }}
-            aria-invalid={wrong}
-            aria-describedby={wrong ? 'passcode-error' : undefined}
-          />
-          {wrong && (
-            <p className="err" id="passcode-error">
-              That passcode is not right.
-            </p>
-          )}
-        </div>
+        {usesRealAuth ? (
+          <>
+            <div className="field">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                autoComplete="username"
+                required
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value)
+                  setError(null)
+                }}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(event) => {
+                  setPassword(event.target.value)
+                  setError(null)
+                }}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="field">
+            <label htmlFor="passcode">Passcode</label>
+            <input
+              id="passcode"
+              type="password"
+              autoComplete="off"
+              value={passcode}
+              onChange={(event) => {
+                setPasscode(event.target.value)
+                setError(null)
+              }}
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? 'gate-error' : undefined}
+            />
+          </div>
+        )}
 
-        <button type="submit" className="btn btn-green" style={{ width: '100%' }}>
-          Enter
+        {error && (
+          <p className="err" id="gate-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          className="btn btn-green"
+          style={{ width: '100%' }}
+          disabled={busy}
+        >
+          {busy ? 'Signing in…' : 'Enter'}
         </button>
 
         <p className="gate-note">
-          <strong>Demo access, not security.</strong> This check runs in the
-          browser, so it protects nothing — it only keeps the back office out of
-          the way while you look around. A real deployment authenticates on the
-          server. The passcode is <code>{DEMO_PASSCODE}</code>.
+          {usesRealAuth ? (
+            <>
+              <strong>Authenticated against Postgres.</strong> Reservations are
+              readable only with a valid staff session — row-level security
+              refuses them otherwise, so the guest list is protected by the
+              database rather than by this screen.
+            </>
+          ) : (
+            <>
+              <strong>Demo access, not security.</strong> No database is
+              configured, so this check runs in the browser and protects
+              nothing — it only keeps the back office out of the way while you
+              look around. The passcode is <code>{DEMO_PASSCODE}</code>.
+            </>
+          )}
         </p>
       </form>
     </div>
