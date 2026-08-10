@@ -1,5 +1,6 @@
 import { CURRENCY, findRoom } from '../data/rooms'
 import { formatShort, nightsBetween } from '../lib/date'
+import { isShared } from '../lib/repository'
 import { useBooking } from '../state/bookingContext'
 import Reveal from './Reveal'
 
@@ -23,12 +24,24 @@ export default function MyReservations() {
           <div>
             <p className="eyebrow">Your reservations</p>
             <h2>
-              Saved on this device, <em>waiting for you.</em>
+              {isShared ? (
+                <>
+                  Confirmed, <em>and waiting for you.</em>
+                </>
+              ) : (
+                <>
+                  Saved on this device, <em>waiting for you.</em>
+                </>
+              )}
             </h2>
           </div>
-          <button type="button" className="more" onClick={resetDemo}>
-            Reset demo data
-          </button>
+          {/* Re-seeding destroys rows other people can see, so it belongs in a
+              migration run deliberately — not behind a button on a live site. */}
+          {!isShared && (
+            <button type="button" className="more" onClick={resetDemo}>
+              Reset demo data
+            </button>
+          )}
         </Reveal>
 
         <Reveal className="mine-list">
