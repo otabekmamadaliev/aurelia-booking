@@ -4,16 +4,12 @@ AURELIA — boutique hotel booking demo, built around a real availability engine
 Live at **https://aurelia-booking.vercel.app**. Repo:
 `github.com/otabekmamadaliev/aurelia-booking`.
 
-## Where this lives — read this first
+## Where this lives
 
-The project sits in **`C:\Users\ASUS\Downloads\aurelia-booking`**, not on the
-Desktop with the others. Two consequences:
-
-- `Desktop/.claude/launch.json` points its `aurelia` entry at `aurelia-booking`
-  relative to the Desktop, so **that dev-server config is broken** — the path
-  does not exist. Run it directly instead: `npm run dev` from this folder.
-- It is in `Downloads`, which is a folder people empty. Everything is pushed to
-  GitHub, but consider moving the working copy somewhere safer.
+`C:\Users\ASUS\Desktop\aurelia-booking`, alongside the other projects. It was
+moved here from `Downloads` on 2026-08-28 — older notes may still point there.
+The `aurelia` entry in `Desktop/.claude/launch.json` (port 5174) works again now
+that the path resolves.
 
 ## Stack
 
